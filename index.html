@@ -1,0 +1,1058 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GymNeon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-0: #050505;
+      --bg-1: #0b0b0b;
+      --bg-2: #121212;
+      --ink-0: #f2f2f2;
+      --ink-1: #bdbdbd;
+      --neon: #ff0000;
+      --neon-dark: rgba(140, 0, 0, 0.6);
+      --neon-soft: rgba(255, 43, 43, 0.35);
+      --glass: rgba(20, 20, 20, 0.7);
+      --stroke: rgba(255, 0, 0, 0.18);
+      --shadow: 0 0 10px rgba(255, 43, 43, 0.65), 0 0 20px rgba(255, 43, 43, 0.35);
+      --shadow-strong: 0 0 15px rgba(255, 0, 0, 0.8);
+      --radius-1: 14px;
+      --radius-2: 18px;
+      --radius-3: 26px;
+      --font-display: "Orbitron", "Segoe UI", Arial, sans-serif;
+      --font-body: "Inter", "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink-0);
+      background: radial-gradient(120% 120% at 0% 0%, #111 0%, #050505 50%, #000 100%);
+      font-family: var(--font-body);
+      min-height: 100vh;
+    }
+
+    .app {
+      max-width: 520px;
+      margin: 0 auto;
+      padding-bottom: 96px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.75) 100%);
+      border-bottom: 1px solid var(--stroke);
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px 6px;
+      gap: 12px;
+    }
+
+    .brand {
+      padding: 0;
+      font-family: var(--font-display);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--neon);
+      box-shadow: var(--shadow);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      padding: 6px 0;
+      overflow-x: auto;
+    }
+
+    .tab {
+      border: 1px solid var(--stroke);
+      background: rgba(10, 10, 10, 0.9);
+      color: var(--ink-1);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+    }
+
+    .tab.active {
+      color: var(--ink-0);
+      border-color: var(--neon);
+      box-shadow: var(--shadow-strong);
+      text-shadow: 0 0 12px rgba(255, 0, 0, 0.8);
+    }
+
+    .day-pills {
+      display: flex;
+      gap: 10px;
+      padding: 8px 16px 12px;
+      overflow-x: auto;
+    }
+
+    .selectors {
+      display: grid;
+      gap: 10px;
+      padding: 6px 16px 4px;
+    }
+
+    .selector-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .selector-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-1);
+      white-space: nowrap;
+    }
+
+    .menu-toggle {
+      width: 44px;
+      height: 36px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(10, 10, 10, 0.85);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .menu-toggle:active {
+      transform: scale(0.96);
+    }
+
+    .menu-icon {
+      position: relative;
+      width: 18px;
+      height: 12px;
+    }
+
+    .menu-icon span {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--neon);
+      box-shadow: var(--shadow-strong);
+      border-radius: 999px;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    .menu-icon span:nth-child(1) { top: 0; }
+    .menu-icon span:nth-child(2) { top: 5px; }
+    .menu-icon span:nth-child(3) { top: 10px; }
+
+    .menu-toggle.open .menu-icon span:nth-child(1) {
+      transform: translateY(5px) rotate(45deg);
+    }
+
+    .menu-toggle.open .menu-icon span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.open .menu-icon span:nth-child(3) {
+      transform: translateY(-5px) rotate(-45deg);
+    }
+
+    .header-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .header-panel.open {
+      max-height: 260px;
+    }
+
+    .pill {
+      border: 1px solid var(--stroke);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      background: rgba(15, 15, 15, 0.6);
+      color: var(--ink-1);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+    }
+
+    .pill.active {
+      color: var(--ink-0);
+      border-color: var(--neon);
+      box-shadow: var(--shadow-strong);
+      text-shadow: 0 0 12px rgba(255, 0, 0, 0.8);
+    }
+
+    .pill.active::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 43, 43, 0.3);
+      animation: pulse 1.6s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.9; transform: scale(1); }
+      70% { opacity: 0; transform: scale(1.12); }
+      100% { opacity: 0; transform: scale(1.12); }
+    }
+
+    .section {
+      padding: 16px;
+    }
+
+    .section h2 {
+      margin: 0 0 8px;
+      font-family: var(--font-display);
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .neon-text {
+      text-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+    }
+
+    .meta {
+      color: var(--ink-1);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .cards {
+      display: grid;
+      gap: 14px;
+      padding: 8px 16px 24px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .cards.fade {
+      animation: fadein 0.35s ease;
+    }
+
+    .card {
+      position: relative;
+      border-radius: var(--radius-2);
+      overflow: hidden;
+      min-height: 140px;
+      background: linear-gradient(0deg, rgba(0,0,0,0.92) 20%, rgba(0,0,0,0.12) 75%), var(--bg);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      border: 1px solid var(--neon-dark);
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    .card:active {
+      transform: scale(0.98);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: var(--bg);
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.65) contrast(1.05);
+      transition: transform 0.4s ease;
+    }
+
+    .card:hover::before { transform: scale(1.03); }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(0deg, rgba(0,0,0,0.88) 20%, rgba(0,0,0,0) 75%);
+    }
+
+    .card-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 16px;
+      gap: 6px;
+    }
+
+    .card-title {
+      font-style: italic;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .card-sub {
+      font-size: 12px;
+      color: var(--ink-1);
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .card-content {
+      display: grid;
+      grid-template-rows: 38px 18px auto;
+      align-content: end;
+      gap: 6px;
+    }
+
+    .card-title {
+      line-height: 1.05;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 38px;
+    }
+
+    .card-sub {
+      min-height: 18px;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .chip-row {
+      min-height: 34px;
+      align-content: start;
+    }
+
+    .chip {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(0, 0, 0, 0.35);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.78);
+      display: none;
+      z-index: 40;
+    }
+
+    .modal.active { display: block; }
+
+    .modal-panel {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg-1);
+      border-radius: var(--radius-3) var(--radius-3) 0 0;
+      overflow: hidden;
+      border-top: 1px solid var(--stroke);
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      animation: slideup 0.35s ease;
+    }
+
+    .modal-hero {
+      position: relative;
+      height: 200px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .modal-hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(0deg, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0.1) 70%);
+    }
+
+    .modal-body {
+      padding: 18px 18px 24px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      letter-spacing: 0.08em;
+      font-size: 18px;
+      text-transform: uppercase;
+    }
+
+    .tech {
+      background: var(--glass);
+      border: 1px solid var(--neon-dark);
+      border-radius: var(--radius-1);
+      padding: 12px;
+      display: grid;
+      gap: 6px;
+      font-size: 13px;
+      backdrop-filter: blur(10px);
+    }
+
+    .method {
+      border-left: 2px solid var(--neon);
+      padding-left: 10px;
+    }
+
+    .cta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid var(--neon);
+      color: var(--ink-0);
+      background: transparent;
+      padding: 10px 16px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 11px;
+      cursor: pointer;
+      box-shadow: var(--shadow-strong);
+    }
+
+    .btn.secondary {
+      border-color: var(--stroke);
+      box-shadow: none;
+      color: var(--ink-1);
+    }
+
+    .footer {
+      padding: 14px 16px 24px;
+      font-size: 11px;
+      color: var(--ink-1);
+    }
+
+    .credits {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--ink-1);
+    }
+
+    .credits summary {
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 10px;
+      color: var(--ink-1);
+    }
+
+    .credits a {
+      color: var(--ink-1);
+      text-decoration: none;
+    }
+
+    .swipe-hint {
+      text-align: center;
+      font-size: 11px;
+      color: var(--ink-1);
+      padding-bottom: 12px;
+    }
+
+    .video-wrap {
+      border-radius: var(--radius-1);
+      overflow: hidden;
+      border: 1px solid var(--neon-dark);
+      box-shadow: var(--shadow);
+      background: #000;
+    }
+
+    .video-wrap iframe {
+      width: 100%;
+      height: 180px;
+      display: block;
+      border: 0;
+    }
+
+    .video-help {
+      font-size: 11px;
+      color: var(--ink-1);
+      text-align: center;
+      padding: 8px 6px 0;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0.2; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideup {
+      from { transform: translateY(12px); opacity: 0.4; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (min-width: 720px) {
+      .app { max-width: 620px; }
+    }
+
+    @media (max-width: 360px) {
+      .cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="header-top">
+      <div class="brand"><span class="dot"></span> GymNeon</div>
+        <button class="menu-toggle" id="menuToggle" aria-label="Abrir filtros">
+          <div class="menu-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+      <div class="header-panel" id="headerPanel">
+        <div class="selectors">
+          <div class="selector-row">
+            <div class="selector-label">Mês</div>
+            <div class="tabs" id="monthTabs"></div>
+          </div>
+          <div class="selector-row">
+            <div class="selector-label">Semana</div>
+            <div class="tabs" id="weekTabs"></div>
+          </div>
+        </div>
+      </div>
+      <div class="day-pills" id="dayPills"></div>
+    </header>
+
+    <section class="section">
+      <h2 id="dayTitle" class="neon-text">Treino</h2>
+      <div class="meta" id="dayMeta"></div>
+    </section>
+
+    <div class="cards" id="cards"></div>
+    <div class="swipe-hint">Deslize para o lado para trocar o dia</div>
+
+    <footer class="footer">
+      Plano focado em condicionamento, 3x/semana, 45 min. Limitações respeitadas: sem braços acima de 90°.
+      <details class="credits">
+        <summary>Créditos das imagens</summary>
+        <div>Wikimedia Commons:</div>
+        <div><a href="https://commons.wikimedia.org/wiki/File:Gym_Leg_Press_Machine.jpg">Gym Leg Press Machine</a></div>
+        <div><a href="https://commons.wikimedia.org/wiki/File:Leg_extender_machine.jpg">Leg extender machine</a></div>
+        <div><a href="https://commons.wikimedia.org/wiki/File:Hip_abductor_machine.jpg">Hip abductor machine</a></div>
+        <div><a href="https://commons.wikimedia.org/wiki/File:Treadmill-gym.jpg">Treadmill gym</a></div>
+        <div><a href="https://commons.wikimedia.org/wiki/File:Leg_press_machine.jpg">Leg press machine</a></div>
+        <div><a href="https://commons.wikimedia.org/wiki/File:Woman_using_a_seated_cable_row_machine_at_the_gym.jpg">Seated cable row</a></div>
+        <div><a href="https://commons.wikimedia.org/wiki/File:Chest_flies_with_cable_machine_-_cable_crossover_flies.jpg">Cable crossover</a></div>
+        <div><a href="https://commons.wikimedia.org/wiki/File:Functional_Trainer_Exercise_Machine_at_Gym.jpg">Functional trainer</a></div>
+        <div><a href="https://commons.wikimedia.org/wiki/File:Outdoor_stationary_bicycle.jpg">Outdoor stationary bicycle</a></div>
+        <div><a href="https://commons.wikimedia.org/wiki/File:Seated-leg-curl-1.png">Seated leg curl</a></div>
+      </details>
+    </footer>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-panel">
+      <div class="modal-hero" id="modalHero"></div>
+    <div class="modal-body">
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="tech" id="modalTech"></div>
+      <div class="tech" id="modalMethods"></div>
+      <div class="video-wrap">
+        <iframe id="modalVideo" loading="lazy" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+      <div class="video-help" id="videoHelp">Troque o VIDEO_ID do YouTube no JSON.</div>
+      <div class="cta">
+        <button class="btn secondary" id="closeBtn">Fechar</button>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <script>
+    const data = {
+      meses: [
+        {
+          nome: "Janeiro",
+          semanas: [
+            {
+              numero: 1,
+              dias: [
+                {
+                  nome: "Segunda",
+                  foco: "Pernas + Cardio leve",
+                  duracao: "45 min",
+                  treinos: [
+                    {
+                      id: 1,
+                      nome: "Aquecimento cardio",
+                      series: "8-10 min",
+                      repeticoes: "Zona leve (60-70% esforço)",
+                      descanso: "-",
+                      foto: "https://commons.wikimedia.org/wiki/Special:FilePath/Treadmill-gym.jpg",
+                      video: "https://www.youtube.com/embed/aS1vwToqa1Y?rel=0&playsinline=1",
+                      instrucoes: "Ritmo leve e contínuo. Ajuste a inclinação só se estiver confortável.",
+                      metodos: [
+                        "Esteira: caminhada com leve inclinação",
+                        "Bike: pedal leve contínuo"
+                      ],
+                      observacoes: "Mantenha postura neutra e respiração controlada."
+                    },
+                    {
+                      id: 2,
+                      nome: "Leg press",
+                      series: "3",
+                      repeticoes: "12-15",
+                      descanso: "60-90s",
+                      foto: "https://commons.wikimedia.org/wiki/Special:FilePath/Gym_Leg_Press_Machine.jpg",
+                      video: "https://www.youtube.com/embed/t8aDKltHLmI?rel=0&playsinline=1",
+                      instrucoes: "Pés na largura dos ombros, desça até onde não houver dor.",
+                      metodos: [
+                        "Máquina leg press (pés na largura dos ombros)",
+                        "Agachamento com halteres (carga leve, braços ao lado do corpo)"
+                      ],
+                      observacoes: "Evite profundidade excessiva."
+                    },
+                    {
+                      id: 3,
+                      nome: "Extensora / Flexora",
+                      series: "2-3",
+                      repeticoes: "12-15",
+                      descanso: "60s",
+                      foto: "https://commons.wikimedia.org/wiki/Special:FilePath/Leg_extender_machine.jpg",
+                      video: "https://www.youtube.com/embed/zDFBYRQYymM?rel=0&playsinline=1",
+                      instrucoes: "Controle total do movimento e evite trancos.",
+                      metodos: [
+                        "Cadeira extensora (quadríceps)",
+                        "Flexora na mesma máquina (posterior)"
+                      ],
+                      observacoes: "Controle total do movimento."
+                    },
+                    {
+                      id: 4,
+                      nome: "Adutor / Abdutor",
+                      series: "2-3",
+                      repeticoes: "15",
+                      descanso: "45-60s",
+                      foto: "https://commons.wikimedia.org/wiki/Special:FilePath/Hip_abductor_machine.jpg",
+                      video: "https://www.youtube.com/embed/jGThLr_91AY?rel=0&playsinline=1",
+                      instrucoes: "Movimento curto e controlado, sem abrir demais.",
+                      metodos: [
+                        "Máquina adutor/abdutor",
+                        "Abdução em pé com mini banda (se tiver)"
+                      ],
+                      observacoes: "Movimento curto e controlado."
+                    },
+                    {
+                      id: 5,
+                      nome: "Panturrilha",
+                      series: "3",
+                      repeticoes: "15-20",
+                      descanso: "45-60s",
+                      foto: "https://commons.wikimedia.org/wiki/Special:FilePath/Leg_press_machine.jpg",
+                      video: "https://www.youtube.com/embed/IjrNPvGDW6I?rel=0&playsinline=1",
+                      instrucoes: "Suba até a ponta do pé e segure 1s no topo.",
+                      metodos: [
+                        "Panturrilha em pé segurando halteres",
+                        "Panturrilha no leg press (pés no topo da plataforma)"
+                      ],
+                      observacoes: "Pausa de 1s no topo."
+                    }
+                  ]
+                },
+                {
+                  nome: "Quarta",
+                  foco: "Peito/Costas + Core",
+                  duracao: "45 min",
+                  treinos: [
+                    {
+                      id: 6,
+                      nome: "Aquecimento cardio",
+                      series: "6-8 min",
+                      repeticoes: "Leve e contínuo",
+                      descanso: "-",
+                      foto: "https://commons.wikimedia.org/wiki/Special:FilePath/Treadmill-gym.jpg",
+                      video: "https://www.youtube.com/embed/aS1vwToqa1Y?rel=0&playsinline=1",
+                      instrucoes: "Ritmo leve, sem impacto.",
+                      metodos: [
+                        "Esteira leve",
+                        "Bike leve"
+                      ],
+                      observacoes: "Evite impacto."
+                    },
+                    {
+                      id: 7,
+                      nome: "Remada horizontal",
+                      series: "3",
+                      repeticoes: "12",
+                      descanso: "60-90s",
+                      foto: "https://commons.wikimedia.org/wiki/Special:FilePath/Woman_using_a_seated_cable_row_machine_at_the_gym.jpg",
+                      video: "https://www.youtube.com/embed/Niq7g0qD_9k?rel=0&playsinline=1",
+                      instrucoes: "Puxe com cotovelos próximos ao corpo, braços abaixo de 90°.",
+                      metodos: [
+                        "Crossover: remada baixa com pegador curto",
+                        "Remada unilateral com halter apoiado no banco"
+                      ],
+                      observacoes: "Braços abaixo de 90°."
+                    },
+                    {
+                      id: 8,
+                      nome: "Peito (press ou flexão)",
+                      series: "3",
+                      repeticoes: "10-12",
+                      descanso: "60-90s",
+                      foto: "https://commons.wikimedia.org/wiki/Special:FilePath/Chest_flies_with_cable_machine_-_cable_crossover_flies.jpg",
+                      video: "https://www.youtube.com/embed/Mc-Kdwnx_M8?rel=0&playsinline=1",
+                      instrucoes: "Amplitude curta se houver dor no ombro.",
+                      metodos: [
+                        "Supino com halteres no banco (sem elevar braços acima de 90°)",
+                        "Flexão inclinada na barra do smith ou banco"
+                      ],
+                      observacoes: "Movimento curto se doer."
+                    },
+                    {
+                      id: 9,
+                      nome: "Remada isométrica + postura",
+                      series: "2",
+                      repeticoes: "30-40s",
+                      descanso: "45-60s",
+                      foto: "https://commons.wikimedia.org/wiki/Special:FilePath/Woman_using_a_seated_cable_row_machine_at_the_gym.jpg",
+                      video: "https://www.youtube.com/embed/Niq7g0qD_9k?rel=0&playsinline=1",
+                      instrucoes: "Segure a posição final com escápulas fechadas.",
+                      metodos: [
+                        "Crossover: segurar a remada baixa na posição final",
+                        "Band pull-apart leve (braços na linha do peito)"
+                      ],
+                      observacoes: "Foco em escápulas."
+                    },
+                    {
+                      id: 10,
+                      nome: "Core anti-flexão",
+                      series: "2-3",
+                      repeticoes: "20-30s",
+                      descanso: "45s",
+                      foto: "https://commons.wikimedia.org/wiki/Special:FilePath/Functional_Trainer_Exercise_Machine_at_Gym.jpg",
+                      video: "https://www.youtube.com/embed/Aoipu_fl3HA?rel=0&playsinline=1",
+                      instrucoes: "Coluna neutra o tempo todo.",
+                      metodos: [
+                        "Prancha com joelhos apoiados",
+                        "Dead bug (sem elevar braços acima de 90°)"
+                      ],
+                      observacoes: "Coluna neutra."
+                    }
+                  ]
+                },
+                {
+                  nome: "Sexta",
+                  foco: "Full body + intervalado leve",
+                  duracao: "45 min",
+                  treinos: [
+                    {
+                      id: 11,
+                      nome: "Aquecimento",
+                      series: "6-8 min",
+                      repeticoes: "Leve",
+                      descanso: "-",
+                      foto: "https://commons.wikimedia.org/wiki/Special:FilePath/Outdoor_stationary_bicycle.jpg",
+                      video: "https://www.youtube.com/embed/MaI2Y9pLDJc?rel=0&playsinline=1",
+                      instrucoes: "Ritmo confortável, sem dor.",
+                      metodos: [
+                        "Bike leve",
+                        "Esteira leve"
+                      ],
+                      observacoes: "Sem dor nas articulações."
+                    },
+                    {
+                      id: 12,
+                      nome: "Circuito pernas",
+                      series: "3",
+                      repeticoes: "12-15",
+                      descanso: "60s",
+                      foto: "https://commons.wikimedia.org/wiki/Special:FilePath/Gym_Leg_Press_Machine.jpg",
+                      video: "https://www.youtube.com/embed/t8aDKltHLmI?rel=0&playsinline=1",
+                      instrucoes: "Faça as duas variações em sequência com carga leve.",
+                      metodos: [
+                        "Leg press + extensora (sequência)",
+                        "Agachamento com halter + avanço curto"
+                      ],
+                      observacoes: "Movimento controlado."
+                    },
+                    {
+                      id: 13,
+                      nome: "Posterior de coxa",
+                      series: "3",
+                      repeticoes: "10-12",
+                      descanso: "60-90s",
+                      foto: "https://commons.wikimedia.org/wiki/Special:FilePath/Seated-leg-curl-1.png",
+                      video: "https://www.youtube.com/embed/fK0uZ3KRZRI?rel=0&playsinline=1",
+                      instrucoes: "Coluna neutra, desça até sentir alongar.",
+                      metodos: [
+                        "Flexora na máquina",
+                        "Stiff com halteres (joelhos semi-flexionados)"
+                      ],
+                      observacoes: "Não arredonde as costas."
+                    },
+                    {
+                      id: 14,
+                      nome: "Remada leve + bíceps",
+                      series: "2-3",
+                      repeticoes: "12",
+                      descanso: "60s",
+                      foto: "https://commons.wikimedia.org/wiki/Special:FilePath/Woman_using_a_seated_cable_row_machine_at_the_gym.jpg",
+                      video: "https://www.youtube.com/embed/YKoMYY-YFso?rel=0&playsinline=1",
+                      instrucoes: "Cotovelos próximos ao corpo, sem levantar acima de 90°.",
+                      metodos: [
+                        "Crossover: remada baixa",
+                        "Rosca alternada com halteres (cotovelos próximos ao corpo)"
+                      ],
+                      observacoes: "Sem elevar cotovelos."
+                    },
+                    {
+                      id: 15,
+                      nome: "Intervalado leve",
+                      series: "8 min",
+                      repeticoes: "30s moderado / 30s leve",
+                      descanso: "-",
+                      foto: "https://commons.wikimedia.org/wiki/Special:FilePath/Treadmill-gym.jpg",
+                      video: "https://www.youtube.com/embed/aS1vwToqa1Y?rel=0&playsinline=1",
+                      instrucoes: "Alternar ritmo moderado e leve sem impacto.",
+                      metodos: [
+                        "Bike intervalada",
+                        "Esteira com variação de ritmo"
+                      ],
+                      observacoes: "Manter respiração controlada."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    const monthTabs = document.getElementById("monthTabs");
+    const weekTabs = document.getElementById("weekTabs");
+    const dayPills = document.getElementById("dayPills");
+    const cards = document.getElementById("cards");
+    const dayTitle = document.getElementById("dayTitle");
+    const dayMeta = document.getElementById("dayMeta");
+    const menuToggle = document.getElementById("menuToggle");
+    const headerPanel = document.getElementById("headerPanel");
+
+    const modal = document.getElementById("modal");
+    const modalHero = document.getElementById("modalHero");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalTech = document.getElementById("modalTech");
+    const modalMethods = document.getElementById("modalMethods");
+    const modalVideo = document.getElementById("modalVideo");
+    const videoHelp = document.getElementById("videoHelp");
+    const closeBtn = document.getElementById("closeBtn");
+
+    let activeMonth = 0;
+    let activeWeek = 0;
+    let activeDay = 0;
+    let isMenuOpen = false;
+
+    function setMenu(open) {
+      isMenuOpen = open;
+      headerPanel.classList.toggle("open", open);
+      menuToggle.classList.toggle("open", open);
+      menuToggle.setAttribute("aria-label", open ? "Fechar filtros" : "Abrir filtros");
+    }
+
+    menuToggle.addEventListener("click", () => {
+      setMenu(!isMenuOpen);
+    });
+
+    function renderTabs() {
+      monthTabs.innerHTML = "";
+      weekTabs.innerHTML = "";
+      data.meses.forEach((mes, idx) => {
+        const btn = document.createElement("button");
+        btn.className = `tab ${idx === activeMonth ? "active" : ""}`;
+        btn.textContent = mes.nome;
+        btn.onclick = () => {
+          activeMonth = idx;
+          activeWeek = 0;
+          activeDay = 0;
+          renderAll();
+        };
+        monthTabs.appendChild(btn);
+      });
+
+      data.meses[activeMonth].semanas.forEach((semana, idx) => {
+        const btn = document.createElement("button");
+        btn.className = `tab ${idx === activeWeek ? "active" : ""}`;
+        btn.textContent = `Semana ${semana.numero}`;
+        btn.onclick = () => {
+          activeWeek = idx;
+          activeDay = 0;
+          renderAll();
+        };
+        weekTabs.appendChild(btn);
+      });
+    }
+
+    function renderDays() {
+      dayPills.innerHTML = "";
+      const dias = data.meses[activeMonth].semanas[activeWeek].dias;
+      dias.forEach((dia, idx) => {
+        const pill = document.createElement("button");
+        pill.className = `pill ${idx === activeDay ? "active" : ""}`;
+        pill.textContent = dia.nome;
+        pill.onclick = () => {
+          activeDay = idx;
+          renderContent();
+        };
+        dayPills.appendChild(pill);
+      });
+    }
+
+    function renderCards() {
+      cards.innerHTML = "";
+      const dia = data.meses[activeMonth].semanas[activeWeek].dias[activeDay];
+      cards.classList.remove("fade");
+      void cards.offsetWidth;
+      cards.classList.add("fade");
+      dia.treinos.forEach((treino) => {
+        const card = document.createElement("article");
+        card.className = "card";
+        const foto = encodeURI(treino.foto);
+        card.style.setProperty("--bg", `url('${foto}')`);
+        card.onclick = () => openModal(treino);
+
+        const content = document.createElement("div");
+        content.className = "card-content";
+        content.innerHTML = `
+          <div class="card-title">${treino.nome}</div>
+          <div class="card-sub">${treino.series} séries • ${treino.repeticoes} • Descanso ${treino.descanso}</div>
+          <div class="chip-row">
+            ${treino.metodos.map((m) => `<span class="chip">${m.split(":")[0]}</span>`).join("")}
+          </div>
+        `;
+        card.appendChild(content);
+        cards.appendChild(card);
+      });
+    }
+
+    function renderContent() {
+      renderDays();
+      renderCards();
+      const dia = data.meses[activeMonth].semanas[activeWeek].dias[activeDay];
+      dayTitle.textContent = `${dia.nome} • ${dia.foco}`;
+      dayMeta.textContent = `Duração estimada: ${dia.duracao}. Foque em cargas leves e execução perfeita.`;
+    }
+
+    function renderAll() {
+      renderTabs();
+      renderContent();
+      setMenu(false);
+    }
+
+    function openModal(treino) {
+      modal.classList.add("active");
+      const foto = encodeURI(treino.foto);
+      modalHero.style.backgroundImage = `url('${foto}')`;
+      modalTitle.textContent = treino.nome;
+      modalTech.innerHTML = `
+        <div><strong>Séries:</strong> ${treino.series}</div>
+        <div><strong>Repetições:</strong> ${treino.repeticoes}</div>
+        <div><strong>Descanso:</strong> ${treino.descanso}</div>
+        <div><strong>Instruções:</strong> ${treino.instrucoes}</div>
+        <div><strong>Observações:</strong> ${treino.observacoes}</div>
+      `;
+      modalMethods.innerHTML = `
+        <div class="method"><strong>Método 1:</strong> ${treino.metodos[0]}</div>
+        <div class="method"><strong>Método 2:</strong> ${treino.metodos[1]}</div>
+      `;
+      const videoUrl = treino.video || "";
+      modalVideo.src = videoUrl;
+      const needsId = videoUrl.includes("VIDEO_ID");
+      videoHelp.style.display = needsId ? "block" : "none";
+    }
+
+    function closeModal() {
+      modal.classList.remove("active");
+    }
+
+    closeBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) closeModal();
+    });
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    cards.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    cards.addEventListener("touchend", (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+
+    function handleSwipe() {
+      const delta = touchEndX - touchStartX;
+      if (Math.abs(delta) < 50) return;
+      const dias = data.meses[activeMonth].semanas[activeWeek].dias;
+      if (delta < 0 && activeDay < dias.length - 1) {
+        activeDay += 1;
+        renderContent();
+      } else if (delta > 0 && activeDay > 0) {
+        activeDay -= 1;
+        renderContent();
+      }
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
