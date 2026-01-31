@@ -84,8 +84,10 @@
     .tabs {
       display: flex;
       gap: 8px;
-      padding: 6px 0;
+      padding: 0;
       overflow-x: auto;
+      flex-wrap: nowrap;
+      -webkit-overflow-scrolling: touch;
     }
 
     .tab {
@@ -112,20 +114,34 @@
     .day-pills {
       display: flex;
       gap: 10px;
-      padding: 8px 16px 12px;
+      padding: 0;
       overflow-x: auto;
+      flex-wrap: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+
+
+    .tabs::-webkit-scrollbar,
+    .day-pills::-webkit-scrollbar {
+      height: 0;
+    }
+
+    .tabs,
+    .day-pills {
+      scrollbar-width: none;
     }
 
     .selectors {
       display: grid;
-      gap: 10px;
-      padding: 6px 16px 4px;
+      gap: 12px;
+      padding: 6px 16px 12px;
     }
 
     .selector-row {
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-wrap: wrap;
     }
 
     .selector-label {
@@ -134,6 +150,7 @@
       text-transform: uppercase;
       color: var(--ink-1);
       white-space: nowrap;
+      min-width: 52px;
     }
 
     .menu-toggle {
@@ -546,28 +563,22 @@
   <div class="app">
     <header>
       <div class="header-top">
-      <div class="brand"><span class="dot"></span> GymNeon</div>
-        <button class="menu-toggle" id="menuToggle" aria-label="Abrir filtros">
-          <div class="menu-icon">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </button>
+        <div class="brand"><span class="dot"></span> GymNeon</div>
       </div>
-      <div class="header-panel" id="headerPanel">
-        <div class="selectors">
-          <div class="selector-row">
-            <div class="selector-label">Mês</div>
-            <div class="tabs" id="monthTabs"></div>
-          </div>
-          <div class="selector-row">
-            <div class="selector-label">Semana</div>
-            <div class="tabs" id="weekTabs"></div>
-          </div>
+      <div class="selectors">
+        <div class="selector-row">
+          <div class="selector-label">Mês</div>
+          <select id="monthSelect" class="month-select" aria-label="Selecionar mês"></select>
+        </div>
+        <div class="selector-row">
+          <div class="selector-label">Semana</div>
+          <div class="tabs" id="weekTabs"></div>
+        </div>
+        <div class="selector-row">
+          <div class="selector-label">Dia</div>
+          <div class="day-pills" id="dayPills"></div>
         </div>
       </div>
-      <div class="day-pills" id="dayPills"></div>
     </header>
 
     <section class="section">
@@ -576,7 +587,6 @@
     </section>
 
     <div class="cards" id="cards"></div>
-    <div class="swipe-hint">Deslize para o lado para trocar o dia</div>
 
     <footer class="footer">
       Plano focado em condicionamento, 45 min. Janeiro 3x/semana, a partir de fevereiro 5x/semana.
@@ -18041,14 +18051,12 @@
 
     applyVideoOverrides();
 
-    const monthTabs = document.getElementById("monthTabs");
+    const monthSelect = document.getElementById("monthSelect");
     const weekTabs = document.getElementById("weekTabs");
     const dayPills = document.getElementById("dayPills");
     const cards = document.getElementById("cards");
     const dayTitle = document.getElementById("dayTitle");
     const dayMeta = document.getElementById("dayMeta");
-    const menuToggle = document.getElementById("menuToggle");
-    const headerPanel = document.getElementById("headerPanel");
 
     const modal = document.getElementById("modal");
     const modalHero = document.getElementById("modalHero");
@@ -18062,34 +18070,24 @@
     let activeMonth = 0;
     let activeWeek = 0;
     let activeDay = 0;
-    let isMenuOpen = false;
 
-    function setMenu(open) {
-      isMenuOpen = open;
-      headerPanel.classList.toggle("open", open);
-      menuToggle.classList.toggle("open", open);
-      menuToggle.setAttribute("aria-label", open ? "Fechar filtros" : "Abrir filtros");
-    }
-
-    menuToggle.addEventListener("click", () => {
-      setMenu(!isMenuOpen);
+    monthSelect.addEventListener("change", (event) => {
+      activeMonth = Number(event.target.value);
+      activeWeek = 0;
+      activeDay = 0;
+      renderAll();
     });
 
     function renderTabs() {
       if (!data.meses.length) return;
-      monthTabs.innerHTML = "";
       weekTabs.innerHTML = "";
+      monthSelect.innerHTML = "";
       data.meses.forEach((mes, idx) => {
-        const btn = document.createElement("button");
-        btn.className = `tab ${idx === activeMonth ? "active" : ""}`;
-        btn.textContent = mes.nome;
-        btn.onclick = () => {
-          activeMonth = idx;
-          activeWeek = 0;
-          activeDay = 0;
-          renderAll();
-        };
-        monthTabs.appendChild(btn);
+        const option = document.createElement("option");
+        option.value = idx;
+        option.textContent = mes.nome;
+        if (idx === activeMonth) option.selected = true;
+        monthSelect.appendChild(option);
       });
 
       data.meses[activeMonth].semanas.forEach((semana, idx) => {
@@ -18162,7 +18160,6 @@
     function renderAll() {
       renderTabs();
       renderContent();
-      setMenu(false);
     }
 
     function openModal(treino) {
